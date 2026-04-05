@@ -1,2 +1,10 @@
-# SQL-Data-WareHouse-Project
-Buliding a modren Data WareHouse with MySQL , including ETL processes, Data Modeling and Analytics
+# Data Warehouse and Analytics Project
+
+## 📌 What this project does
+
+This project builds a data warehouse using MySQL and performs SQL queries to analyze data and generate insights.
+
+## 🛠️ Tools Used
+
+* MySQL
+* SQL
