@@ -1,9 +1,9 @@
 -- Create Database if not exists
-DROP DATABASE IF EXISTS DataWareHouse;
-CREATE DATABASE DataWareHouse;
+DROP DATABASE IF EXISTS datawarehouse;
+CREATE DATABASE datawarehouse;
 
 -- Use database
-USE DataWareHouse;
+USE datawarehouse;
 
 /*
 Purpose:
