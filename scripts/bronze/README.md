@@ -1,99 +1,129 @@
+# 📊 Bronze Layer Data Loading
+
+## 🎯 Purpose
+The Bronze layer is designed to store raw, unprocessed data from CRM and ERP systems.  
+This layer acts as a staging area where data is ingested directly from source files (CSV) without transformations.  
+The data will later be cleaned and transformed in the Silver and Gold layers for analytics and reporting.
+
+---
+
 # 🔑 Steps in Bronze Execution
 
-## **Prepare the Environment**
-- Place all required CSV files (e.g., `px_cat_g1v2.csv`, `loc_a101.csv`, `cust_az12.csv`, etc.) into the designated upload folder (`C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/`).
-- Ensure your `ddl_bronze.sql` script contains the truncate + load commands for each bronze table.
+## Create Bronze Tables
+- Before loading data, create all required bronze tables using the DDL script.
+- Run the script:
+  - MySQL: source creation_bronze_tables.sql;
+- Tables created:
+  - bronze_crm_cust_info
+  - bronze_crm_prd_info
+  - bronze_crm_sales_details
+  - bronze_erp_cust_az12
+  - bronze_erp_loc_a101
+  - bronze_erp_px_cat_g1v2
+- Purpose: Initializes schema to store raw data from CSV files.
 
-## **Truncate Bronze Tables**
-- Clear out old data from all bronze tables to avoid duplicates and ensure consistency.
-- In MySQL: `CALL truncate_crm_erp_tables();`  
-  *Usage:* Executes a stored procedure that truncates staging tables.  
-- In SQL Server: `EXEC truncate_crm_erp_tables;`  
-  *Usage:* Same purpose, different keyword (`EXEC`).  
+---
 
-## **Load Fresh Data from CSVs**
-- For each CSV file, load data into its corresponding bronze table.
-- In MySQL: `LOAD DATA INFILE 'file.csv' INTO TABLE bronze_table ...`  
-  *Usage:* Quickly loads CSV data into a table, but cannot be used inside stored procedures.  
-- In SQL Server: `BULK INSERT bronze_table FROM 'file.csv' WITH (...)`  
-  *Usage:* Imports CSV/text data into a table, and can be used inside stored procedures.  
+## Prepare the Environment
+- Place all CSV files (px_cat_g1v2.csv, loc_a101.csv, cust_az12.csv, etc.) into:
+  C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/
+- Ensure ddl_bronze.sql has truncate + load commands.
 
-## **Apply Data Cleaning During Load**
-- Convert empty strings to `NULL` using `NULLIF`.  
-  *Usage:* Ensures missing values are stored as proper `NULL`.  
-- Convert text dates into proper date formats (`STR_TO_DATE` in MySQL, `CONVERT` in SQL Server).  
-  *Usage:* Standardizes date fields during load.  
-- Handle invalid values (e.g., `CASE WHEN @field IN ('', '0') THEN NULL`).  
-  *Usage:* Cleans up placeholder or invalid entries.  
+---
 
-## **Print Status Messages**
-- Show progress markers for each step.
-- In MySQL: `SELECT ">> Updating table bronze_xxx" AS status;`  
-  *Usage:* Prints progress messages during script execution.  
-- In SQL Server: `PRINT '>> Updating table bronze_xxx';`  
-  *Usage:* Prints progress messages during script execution.  
+## Truncate Bronze Tables
+- MySQL:
+  CALL truncate_crm_erp_tables();
+- SQL Server:
+  EXEC truncate_crm_erp_tables;
 
-## **Track Execution Timing**
-- Record start and end times to measure duration.
-- In MySQL: `SET @start_time = NOW(); ... TIMESTAMPDIFF(SECOND, @start_time, @end_time)`  
-  *Usage:* Captures execution start/end and calculates duration.  
-- In SQL Server: `DECLARE @start_time DATETIME = GETDATE(); ... DATEDIFF(SECOND, @start_time, @end_time)`  
-  *Usage:* Same purpose, different functions.  
+---
 
-## **Execute the Script**
-- Option A: Manually in MySQL shell → `source load_bronze.sql;`  
-  *Usage:* Runs the `.sql` file interactively inside MySQL shell.  
-- Option B: Via `.bat` file → double‑click or run in Command Prompt, which calls MySQL and executes the `.sql` automatically.  
-  *Usage:* Automates execution with logging and confirmation.  
+## Load Fresh Data from CSVs
+- MySQL:
+  LOAD DATA INFILE 'file.csv' INTO TABLE bronze_table ...
+- SQL Server:
+  BULK INSERT bronze_table FROM 'file.csv' WITH (...)
 
-## **Confirm Completion**
-- `.bat` file echoes a message like *“Tables in datawarehouse have been updated”*.  
-  *Usage:* Provides user feedback after execution.  
-- Log file (`load_log.txt`) captures all commands, outputs, and errors for review.  
-  *Usage:* Maintains a permanent record of each run.  
+---
+
+## Apply Data Cleaning During Load
+- Convert empty to NULL:
+  NULLIF(@field, '')
+- Convert date:
+  MySQL: STR_TO_DATE(@field, '%Y-%m-%d')
+  SQL Server: CONVERT(DATE, field, 23)
+- Handle invalid:
+  CASE WHEN @field IN ('', '0') THEN NULL END
+
+---
+
+## Print Status Messages
+- MySQL:
+  SELECT ">> Updating table bronze_xxx";
+- SQL Server:
+  PRINT '>> Updating table bronze_xxx';
+
+---
+
+## Track Execution Timing
+- MySQL:
+  SET @start_time = NOW();
+  SET @end_time = NOW();
+  SELECT TIMESTAMPDIFF(SECOND, @start_time, @end_time);
+- SQL Server:
+  DECLARE @start_time DATETIME = GETDATE();
+  DECLARE @end_time DATETIME = GETDATE();
+  SELECT DATEDIFF(SECOND, @start_time, @end_time);
+
+---
+
+## Execute the Script
+- MySQL:
+  source load_bronze.sql;
+- Using .bat file:
+  Run to automate execution.
+
+---
+
+## Confirm Completion
+- Output:
+  Tables in datawarehouse have been updated
 
 ---
 
 # ⚖️ MySQL vs SQL Server Differences
 
-## **CSV Loading**
-- MySQL → `LOAD DATA INFILE 'file.csv' INTO TABLE ...`  
-  *Usage:* Fast bulk load of CSVs, but not allowed inside procedures.  
-- SQL Server → `BULK INSERT ... FROM 'file.csv' WITH (...)` or `OPENROWSET(BULK...)`  
-  *Usage:* Bulk load of CSVs, can be used inside procedures.  
+## CSV Loading
+- MySQL: LOAD DATA INFILE
+- SQL Server: BULK INSERT
 
-## **Stored Procedure Calls**
-- MySQL → `CALL procedure_name();`  
-  *Usage:* Executes stored procedures.  
-- SQL Server → `EXEC procedure_name;`  
-  *Usage:* Executes stored procedures (same purpose, different keyword).  
+## Stored Procedure
+- MySQL: CALL procedure_name();
+- SQL Server: EXEC procedure_name;
 
-## **Date Conversion**
-- MySQL → `STR_TO_DATE(@field, '%Y-%m-%d')`  
-  *Usage:* Converts string values into proper date format.  
-- SQL Server → `CONVERT(DATE, field, 23)` or `CAST(field AS DATE)`  
-  *Usage:* Converts string/numeric values into date format.  
+## Date Conversion
+- MySQL: STR_TO_DATE()
+- SQL Server: CONVERT() / CAST()
 
-## **Null Handling**
-- MySQL → `NULLIF(@field, '')`  
-  *Usage:* Converts empty strings into `NULL`.  
-- SQL Server → `NULLIF(field, '')`  
-  *Usage:* Same function, same purpose.  
+## Null Handling
+- Both: NULLIF(field, '')
 
-## **Timing Functions**
-- MySQL → `NOW()` and `TIMESTAMPDIFF()`  
-  *Usage:* Capture current time and calculate duration.  
-- SQL Server → `GETDATE()` and `DATEDIFF()`  
-  *Usage:* Same purpose, different function names.  
+## Timing Functions
+- MySQL: NOW(), TIMESTAMPDIFF()
+- SQL Server: GETDATE(), DATEDIFF()
 
-## **Print / Output Messages**
-- MySQL → `SELECT ">> message" AS status;`  
-  *Usage:* Prints progress markers inside SQL scripts.  
-- SQL Server → `PRINT '>> message';`  
-  *Usage:* Prints progress markers inside SQL scripts.  
+## Print Messages
+- MySQL: SELECT "message"
+- SQL Server: PRINT 'message'
 
-## **LOAD Command in Procedures**
-- MySQL → `LOAD DATA INFILE`  
-  *Usage:* Loads CSV data into tables, but **cannot be used inside stored procedures**.  
-- SQL Server → `BULK INSERT`  
-  *Usage:* Loads CSV data into tables and **can be used inside stored procedures**.  
+## Bulk Load in Procedures
+- MySQL: LOAD DATA INFILE ❌
+- SQL Server: BULK INSERT ✅
+
+---
+
+# 🚀 Outcome
+- Raw data loaded into Bronze tables  
+- Ready for Silver layer  
+- Consistent data ingestion pipeline  
