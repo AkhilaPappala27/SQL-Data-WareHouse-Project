@@ -1,4 +1,4 @@
-##📊 **Bronze Layer – Data Ingestion**
+📊 **Bronze Layer – Data Ingestion**
 
 ---
 
