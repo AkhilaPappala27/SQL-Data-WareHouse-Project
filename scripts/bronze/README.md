@@ -7,7 +7,7 @@
 The Bronze layer stores **raw, unprocessed data** from CRM and ERP systems.
 It acts as a **staging layer**, where data is ingested directly from CSV files with minimal transformation.
 
-This layer preserves source data and prepares it for further processing in the **Silver** and **Gold** layers.
+This layer preserves source data and prepares it for further processing in downstream layers.
 
 ---
 
@@ -92,7 +92,7 @@ run_bronze.bat
 ### 8. Confirmation
 
 ✔ Data successfully loaded into Bronze tables
-✔ Ready for Silver layer processing
+✔ Ready for further processing
 
 ---
 
@@ -112,14 +112,4 @@ run_bronze.bat
 
 * Raw data ingested into Bronze tables
 * Re-runnable and automated pipeline
-* Foundation ready for Silver transformations
-
----
-
-## 💡 Architecture Note
-
-This project follows **Medallion Architecture**:
-
-* Bronze → Raw data
-* Silver → Cleaned & transformed data
-* Gold → Business insights
+* Foundation ready for next layer processing
