@@ -27,7 +27,7 @@ The data will later be cleaned and transformed in the Silver and Gold layers for
 ## Prepare the Environment
 - Place all CSV files (px_cat_g1v2.csv, loc_a101.csv, cust_az12.csv, etc.) into:
   C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/
-- Ensure ddl_bronze.sql has truncate + load commands.
+- Ensure load_bronze.sql has truncate + load commands.
 
 ---
 
