@@ -49,12 +49,12 @@ The data will later be cleaned and transformed in the Silver and Gold layers for
 
 ## Apply Data Cleaning During Load
 - Convert empty to NULL:
-  -NULLIF(@field, '')
+  NULLIF(@field, '')
 - Convert date:
-  -MySQL: STR_TO_DATE(@field, '%Y-%m-%d')
-  -SQL Server: CONVERT(DATE, field, 23)
+  MySQL: STR_TO_DATE(@field, '%Y-%m-%d')
+  SQL Server: CONVERT(DATE, field, 23)
 - Handle invalid:
-  -CASE WHEN @field IN ('', '0') THEN NULL END
+  CASE WHEN @field IN ('', '0') THEN NULL END
 
 ---
 
