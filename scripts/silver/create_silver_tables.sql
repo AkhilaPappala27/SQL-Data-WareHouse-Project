@@ -19,12 +19,13 @@ CREATE TABLE silver_crm_cust_info (
 DROP TABLE IF EXISTS silver_crm_prd_info;
 CREATE TABLE silver_crm_prd_info (
     prd_id INT,
+    cat_id VARCHAR(50),        -- Derived category ID from product key (used for joining with category table)
     prd_key VARCHAR(50),
     prd_nm VARCHAR(50),
     prd_cost INT,
     prd_line VARCHAR(50),
-    prd_start_dt DATETIME,
-    prd_end_dt DATETIME,
+    prd_start_dt DATE,         -- Converted from DATETIME to DATE for consistency
+    prd_end_dt DATE,           -- Derived end date using window function
     dwh_create_date DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
