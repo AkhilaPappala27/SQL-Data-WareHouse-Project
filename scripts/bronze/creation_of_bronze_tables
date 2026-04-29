@@ -9,7 +9,7 @@
 
 -- Table: bronze_crm_cust_info
 -- Stores basic customer information from CRM system
-CREATE TABLE bronze_crm_cust_info (
+CREATE TABLE IF NOT EXISTS bronze_crm_cust_info (
     cst_id INT,                     -- Customer ID
     cst_key VARCHAR(50),           -- Unique customer key
     cst_firstname VARCHAR(50),     -- First name
@@ -22,7 +22,7 @@ CREATE TABLE bronze_crm_cust_info (
 
 -- Table: bronze_crm_prd_info
 -- Stores product information from CRM system
-CREATE TABLE bronze_crm_prd_info (
+CREATE TABLE IF NOT EXISTS bronze_crm_prd_info (
     prd_id INT,                    -- Product ID
     prd_key VARCHAR(50),           -- Product key
     prd_nm VARCHAR(50),            -- Product name
@@ -35,7 +35,7 @@ CREATE TABLE bronze_crm_prd_info (
 
 -- Table: bronze_crm_sales_details
 -- Stores sales transaction details
-CREATE TABLE bronze_crm_sales_details (
+CREATE TABLE IF NOT EXISTS bronze_crm_sales_details (
     sls_ord_num VARCHAR(50),       -- Order number
     sls_prd_key VARCHAR(50),       -- Product key
     sls_cust_id INT,               -- Customer ID
@@ -50,7 +50,7 @@ CREATE TABLE bronze_crm_sales_details (
 
 -- Table: bronze_erp_cust_az12
 -- Stores additional customer details from ERP system
-CREATE TABLE bronze_erp_cust_az12 (
+CREATE TABLE IF NOT EXISTS bronze_erp_cust_az12 (
     cid VARCHAR(50),               -- Customer ID
     bdate DATE,                    -- Birth date
     gen VARCHAR(50)                -- Gender
@@ -59,7 +59,7 @@ CREATE TABLE bronze_erp_cust_az12 (
 
 -- Table: bronze_erp_loc_a101
 -- Stores customer location details
-CREATE TABLE bronze_erp_loc_a101 (
+CREATE TABLE IF NOT EXISTS bronze_erp_loc_a101 (
     cid VARCHAR(50),               -- Customer ID
     cntry VARCHAR(50)              -- Country
 );
@@ -67,7 +67,7 @@ CREATE TABLE bronze_erp_loc_a101 (
 
 -- Table: bronze_erp_px_cat_g1v2
 -- Stores product category and classification details
-CREATE TABLE bronze_erp_px_cat_g1v2 (
+CREATE TABLE IF NOT EXISTS bronze_erp_px_cat_g1v2 (
     id VARCHAR(50),                -- Product ID
     cat VARCHAR(50),               -- Category
     subcat VARCHAR(50),            -- Sub-category
