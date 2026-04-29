@@ -4,7 +4,7 @@
 @echo off
 REM Run load_bronze.sql against the datawarehouse database
 
-"C:\Program Files\MySQL\MySQL Server 8.0\bin\mysql.exe" -u root -p datawarehouse < "C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/load_bronze.sql"
+"C:\Program Files\MySQL\MySQL Server 8.0\bin\mysql.exe" -u root -p datawarehouse < load_bronze.sql
 
 echo ============================================
 echo Tables in 'datawarehouse' have been updated
