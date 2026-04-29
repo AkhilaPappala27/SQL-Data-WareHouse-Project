@@ -1,4 +1,4 @@
-📊 **Bronze Layer – Data Ingestion**
+# 📊 Bronze Layer – Data Ingestion
 
 ---
 
@@ -11,40 +11,83 @@ This layer preserves source data and prepares it for further processing in downs
 
 ---
 
+## 🚀 Run Order
+
+Follow this order to execute the Bronze layer correctly:
+
+1. Create tables
+
+   ```sql
+   SOURCE create_bronze_tables.sql;
+   ```
+
+2. Run data load pipeline
+
+   ```sql
+   SOURCE load_bronze.sql;
+   ```
+
+OR simply run:
+
+```
+run_bronze.bat
+```
+
+> ✔ The `.bat` file automatically handles execution.
+
+---
+
 ## 🔑 Execution Steps
 
 ### 1. Create Bronze Tables
 
-Run the DDL script to create raw tables:
+```sql
+SOURCE create_bronze_tables.sql;
+```
+
+---
+
+### 2. Enable & Check File Loading (if required)
+
+Check current status:
 
 ```sql
-SOURCE creation_of_bronze_tables.sql;
+SHOW VARIABLES LIKE 'local_infile';
 ```
 
-**Tables:**
+Enable if needed:
 
-* bronze_crm_cust_info
-* bronze_crm_prd_info
-* bronze_crm_sales_details
-* bronze_erp_cust_az12
-* bronze_erp_loc_a101
-* bronze_erp_px_cat_g1v2
+```sql
+SET GLOBAL local_infile = 1;
+```
+
+> ⚠️ Only required if `LOAD DATA LOCAL INFILE` is disabled.
 
 ---
 
-### 2. Prepare Environment
+### 3. Prepare Environment
 
-* Place CSV files in:
+Place CSV files in:
 
 ```
-C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/
+datasets/
 ```
 
-* Ensure `load_bronze.sql` contains truncate and load logic
+Example:
+
+```
+datasets/
+├── px_cat_g1v2.csv
+├── loc_a101.csv
+├── cust_az12.csv
+├── sales_details.csv
+├── prd_info.csv
+├── cust_info.csv
+```
 
 ---
 
-### 3. Truncate Existing Data
+### 4. Truncate Existing Data
 
 ```sql
 CALL truncate_crm_erp_tables();
@@ -52,36 +95,36 @@ CALL truncate_crm_erp_tables();
 
 ---
 
-### 4. Load Data from CSV
+### 5. Load Data from CSV
 
 ```sql
-LOAD DATA INFILE 'file.csv'
+LOAD DATA LOCAL INFILE 'datasets/file.csv'
 INTO TABLE bronze_table;
 ```
 
 ---
 
-### 5. Minimal Data Standardization
+### 6. Minimal Data Standardization
 
-* Convert empty values → NULL
-* Basic date formatting (if required)
+* Convert empty values → `NULL` using `NULLIF()`
+* Date conversion using `STR_TO_DATE()`
 
 ---
 
-### 6. Logging & Monitoring
+### 7. Logging & Monitoring
 
 * Status messages for each table load
-* Execution time tracking
+* Execution time tracking using `NOW()` and `TIMESTAMPDIFF()`
 
 ---
 
-### 7. Execute Pipeline
+### 8. Execute Pipeline
 
 ```sql
 SOURCE load_bronze.sql;
 ```
 
-OR run:
+OR
 
 ```
 run_bronze.bat
@@ -89,27 +132,30 @@ run_bronze.bat
 
 ---
 
-### 8. Confirmation
+### 9. Confirmation
 
 ✔ Data successfully loaded into Bronze tables
 ✔ Ready for further processing
 
 ---
 
-## ⚖️ MySQL vs SQL Server (Quick Comparison)
+## ⚖️ MySQL vs SQL Server
 
-| Feature         | MySQL            | SQL Server       |
-| --------------- | ---------------- | ---------------- |
-| Bulk Load       | LOAD DATA INFILE | BULK INSERT      |
-| Procedure Call  | CALL             | EXEC             |
-| Date Conversion | STR_TO_DATE()    | CONVERT()/CAST() |
-| Timing          | NOW()            | GETDATE()        |
-| Logging         | SELECT           | PRINT            |
+| Feature         | MySQL                  | SQL Server            |
+| --------------- | ---------------------- | --------------------- |
+| Bulk Load       | LOAD DATA LOCAL INFILE | BULK INSERT           |
+| Procedure Call  | CALL                   | EXEC                  |
+| Date Conversion | STR_TO_DATE()          | CONVERT()/CAST()      |
+| Timing          | NOW(), TIMESTAMPDIFF() | GETDATE(), DATEDIFF() |
+| Logging         | SELECT                 | PRINT                 |
 
 ---
 
 ## 🚀 Outcome
 
 * Raw data ingested into Bronze tables
+* Minimal cleaning applied during load
 * Re-runnable and automated pipeline
-* Foundation ready for next layer processing
+* Data ready for transformation in the Silver layer
+
+---
