@@ -148,6 +148,19 @@ run_silver.bat
 | Error Handling   | DECLARE HANDLER      | TRY...CATCH                 |
 
 ---
+## 🧪 Data Quality Checks
+
+Quality checks are implemented in:
+tests/silver_quality_checks.sql
+
+These checks validate:
+- Primary key uniqueness
+- Null values
+- Data consistency
+- Date validity
+- Standardization
+
+---
 
 ## 🚀 Outcome
 
