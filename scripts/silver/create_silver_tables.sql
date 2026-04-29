@@ -2,6 +2,8 @@
 -- SILVER LAYER
 -- ============================================================
 
+USE datawarehouse;
+
 -- CRM CUSTOMER
 DROP TABLE IF EXISTS silver_crm_cust_info;
 CREATE TABLE silver_crm_cust_info (
